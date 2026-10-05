@@ -1,0 +1,5 @@
+title: "Hyperbolic Rooster Shmup Archive"
+description: "Shmup clear logs, high scores, and replays."
+theme: jekyll-theme-cayman # Clean dark-header theme native to GitHub Pages
+markdown: kramdown
+permalink: pretty
