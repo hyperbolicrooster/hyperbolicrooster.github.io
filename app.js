@@ -8,6 +8,7 @@
     archive: $("archive"),
     q: $("q"),
     status: $("status"),
+    platform: $("platform"),
     sort: $("sort"),
     count: $("count"),
     empty: $("empty"),
@@ -107,6 +108,30 @@
     }
   }
 
+  const NO_PLATFORM = "__none__";
+
+  function matchesPlatform(e, value) {
+    if (value === "all") return true;
+    if (value === NO_PLATFORM) return !e.platform;
+    return e.platform === value;
+  }
+
+  function populatePlatforms() {
+    const names = Array.from(new Set(entries.map((e) => e.platform).filter(Boolean)))
+      .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
+    names.forEach((name) => {
+      const opt = el("option", null, name);
+      opt.value = name;
+      els.platform.appendChild(opt);
+    });
+    if (entries.some((e) => !e.platform) && names.length) {
+      const opt = el("option", null, "No platform listed");
+      opt.value = NO_PLATFORM;
+      els.platform.appendChild(opt);
+    }
+    els.platform.disabled = names.length === 0;
+  }
+
   function matchesQuery(e, q) {
     if (!q) return true;
     const hay = [e.game, e.ship, e.mode, e.notes, e.platform, e.hardware, e.rom]
@@ -150,7 +175,9 @@
 
   function render() {
     const q = els.q.value.trim().toLowerCase();
-    const filtered = entries.filter((e) => matchesStatus(e, els.status.value) && matchesQuery(e, q));
+    const filtered = entries.filter(
+      (e) => matchesStatus(e, els.status.value) && matchesPlatform(e, els.platform.value) && matchesQuery(e, q)
+    );
     const groups = groupByGame(filtered);
     sortGroups(groups, els.sort.value);
 
@@ -196,12 +223,14 @@
     if (!Array.isArray(data)) throw new Error("scores.json must be a list of entries.");
     entries = data.filter((e) => e && typeof e.game === "string" && e.game.trim());
     renderTally();
+    populatePlatforms();
     render();
   }
 
   ["input", "change"].forEach((evt) => {
     els.q.addEventListener(evt, render);
     els.status.addEventListener(evt, render);
+    els.platform.addEventListener(evt, render);
     els.sort.addEventListener(evt, render);
   });
 

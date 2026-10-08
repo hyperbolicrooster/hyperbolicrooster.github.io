@@ -5,24 +5,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Shmup record book</title>
   <meta name="description" content="My shmup high scores and 1CC clears.">
+  <meta name="theme-color" content="#333333">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Raleway:wght@700;800&display=swap">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header class="masthead">
-    <h1>Shmup record book</h1>
-    <p class="lede">Every high score and clear I've logged, with proof where I have it.</p>
-    <dl class="tally" aria-label="Summary">
-      <div><dt>Games</dt><dd id="stat-games">0</dd></div>
-      <div><dt>1CCs</dt><dd id="stat-1cc">0</dd></div>
-      <div><dt>2-ALLs</dt><dd id="stat-2all">0</dd></div>
-      <div><dt>Scores logged</dt><dd id="stat-scores">0</dd></div>
-    </dl>
+    <div class="wrap masthead-inner">
+      <div class="masthead-text">
+        <h1>Shmup record book</h1>
+        <p class="lede">Every high score and clear I've logged, with proof where I have it.</p>
+      </div>
+      <img class="avatar" src="assets/profile.png" width="480" height="480"
+           alt="Profile picture: an abstract rooster built from sharp green shards on a dark grey background">
+    </div>
+    <div class="wrap">
+      <dl class="tally" aria-label="Summary">
+        <div><dt>Games</dt><dd id="stat-games">0</dd></div>
+        <div><dt>1CCs</dt><dd id="stat-1cc">0</dd></div>
+        <div><dt>2-ALLs</dt><dd id="stat-2all">0</dd></div>
+        <div><dt>Scores logged</dt><dd id="stat-scores">0</dd></div>
+      </dl>
+    </div>
   </header>
 
-  <main>
+  <main class="wrap">
     <form class="controls" role="search" onsubmit="return false">
       <label class="field grow">
         <span>Search</span>
@@ -39,6 +50,12 @@
         </select>
       </label>
       <label class="field">
+        <span>Platform</span>
+        <select id="platform">
+          <option value="all">All platforms</option>
+        </select>
+      </label>
+      <label class="field">
         <span>Sort games by</span>
         <select id="sort">
           <option value="title">Title</option>
@@ -50,11 +67,11 @@
 
     <p id="count" class="count" aria-live="polite"></p>
     <div id="archive"></div>
-    <p id="empty" class="empty" hidden>No entries match. Clear the search or switch the filter back to Everything.</p>
+    <p id="empty" class="empty" hidden>No entries match. Clear the search or set the filters back to their first option.</p>
     <p id="error" class="empty" role="alert" hidden></p>
   </main>
 
-  <footer class="foot">
+  <footer class="wrap foot">
     <p>Entries live in <code>data/scores.json</code>. Edit that file and push to update this page.</p>
   </footer>
 
