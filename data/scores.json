@@ -1,13 +1,14 @@
 [
   {
     "game": "Raiden",
-    "score": 100000,
+    "score": 116460,
     "mode": "Easy",
     "date": "2026-10-08",
     "platform": "Arcade (FinalBurn Neo)",
     "year": 1990,
     "hardware": "Seibu Kaihatsu Proprietary",
     "rom": "raidenu"
+    "notes": "Current WIP"
   },
   {
     "game": "DoDonPachi",
