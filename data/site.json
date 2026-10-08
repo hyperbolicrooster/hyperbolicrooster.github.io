@@ -1,0 +1,8 @@
+{
+  "youtubeChannelId": "",
+  "links": [
+    { "label": "YouTube", "url": "https://www.youtube.com/@your-handle" },
+    { "label": "Twitter / X", "url": "https://x.com/your-handle" },
+    { "label": "Twitch", "url": "https://www.twitch.tv/your-handle" }
+  ]
+}
