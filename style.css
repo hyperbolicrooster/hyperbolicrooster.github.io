@@ -240,3 +240,58 @@ h1 {
 @media (prefers-reduced-motion: reduce) {
   * { scroll-behavior: auto !important; transition: none !important; }
 }
+
+/* Elements that set their own display must still respect the hidden attribute */
+[hidden] { display: none !important; }
+
+/* Social links in the masthead */
+.socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.socials a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0.25rem 0.875rem;
+  border: 2px solid var(--green);
+  border-radius: 4px;
+  color: var(--white);
+  font-family: var(--heading);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  text-decoration: none;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.socials a:hover { background: var(--green); color: var(--black); }
+
+.masthead :focus-visible { outline-color: var(--green); }
+
+/* Embedded latest upload */
+.latest { margin: 2.5rem 0 0.5rem; }
+
+.latest h2 {
+  margin: 0 0 0.75rem;
+  font-weight: 800;
+  font-size: 1.75rem;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.video-frame {
+  max-width: 44rem;
+  aspect-ratio: 16 / 9;
+  border: 3px solid var(--green);
+  background: var(--black);
+}
+
+.video-frame iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}

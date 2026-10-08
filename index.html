@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>HYPERBOLIC ROOSTER SHMUP ARCHIVE</title>
+  <title>Shmup record book</title>
   <meta name="description" content="My shmup high scores and 1CC clears.">
   <meta name="theme-color" content="#333333">
   <link rel="icon" type="image/png" href="assets/favicon.png">
@@ -17,8 +17,9 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <div class="masthead-text">
-        <h1>HYPERBOLIC ROOSTER SHMUP ARCHIVE</h1>
-        <p class="lede">An archive of all my shmup 1CCs and high scores.</p>
+        <h1>Shmup record book</h1>
+        <p class="lede">Every high score and clear I've logged, with video where I have it.</p>
+        <nav id="socials" class="socials" aria-label="Social links" hidden></nav>
       </div>
       <img class="avatar" src="assets/profile.png" width="480" height="480"
            alt="Profile picture: an abstract rooster built from sharp green shards on a dark grey background">
@@ -34,6 +35,11 @@
   </header>
 
   <main class="wrap">
+    <section id="latest" class="latest" aria-labelledby="latest-title" hidden>
+      <h2 id="latest-title">Latest upload</h2>
+      <div id="latest-frame" class="video-frame"></div>
+    </section>
+
     <form class="controls" role="search" onsubmit="return false">
       <label class="field grow">
         <span>Search</span>

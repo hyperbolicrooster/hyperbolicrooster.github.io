@@ -2,6 +2,7 @@
   "use strict";
 
   const PAD = 10; // scores are shown zero-padded to this many digits, like an arcade display
+  const NO_PLATFORM = "__none__";
 
   const $ = (id) => document.getElementById(id);
   const els = {
@@ -36,6 +37,13 @@
   function hasScore(e) {
     return typeof e.score === "number" && isFinite(e.score);
   }
+
+  // "video" is the field name now; "proof" still works so older entries don't break
+  function videoOf(e) {
+    return e.video || e.proof || "";
+  }
+
+  /* ---------- Entries ---------- */
 
   function renderScore(e) {
     const node = el("div", "score");
@@ -77,9 +85,10 @@
     const bits = [];
     if (e.date) bits.push(document.createTextNode(e.date));
     if (e.platform) bits.push(document.createTextNode(e.platform));
-    if (e.proof && isSafeUrl(e.proof)) {
-      const a = el("a", null, "Proof");
-      a.href = e.proof;
+    const video = videoOf(e);
+    if (video && isSafeUrl(video)) {
+      const a = el("a", null, "Video");
+      a.href = video;
       a.target = "_blank";
       a.rel = "noopener noreferrer";
       bits.push(a);
@@ -98,6 +107,8 @@
     return li;
   }
 
+  /* ---------- Filtering and sorting ---------- */
+
   function matchesStatus(e, status) {
     switch (status) {
       case "clears": return e.clear === "1CC" || e.clear === "2-ALL";
@@ -108,12 +119,17 @@
     }
   }
 
-  const NO_PLATFORM = "__none__";
-
   function matchesPlatform(e, value) {
     if (value === "all") return true;
     if (value === NO_PLATFORM) return !e.platform;
     return e.platform === value;
+  }
+
+  function matchesQuery(e, q) {
+    if (!q) return true;
+    const hay = [e.game, e.developer, e.ship, e.mode, e.notes, e.platform, e.hardware, e.rom]
+      .filter(Boolean).join(" ").toLowerCase();
+    return q.split(/\s+/).every((word) => hay.includes(word));
   }
 
   function populatePlatforms() {
@@ -132,13 +148,6 @@
     els.platform.disabled = names.length === 0;
   }
 
-  function matchesQuery(e, q) {
-    if (!q) return true;
-    const hay = [e.game, e.ship, e.mode, e.notes, e.platform, e.hardware, e.rom]
-      .filter(Boolean).join(" ").toLowerCase();
-    return q.split(/\s+/).every((word) => hay.includes(word));
-  }
-
   function groupByGame(list) {
     const map = new Map();
     list.forEach((e) => {
@@ -152,12 +161,18 @@
     return items.reduce((max, e) => (e.date && e.date > max ? e.date : max), "");
   }
 
+  // Game details (developer, hardware, year) can sit on any one entry for that game
+  function pick(items, key) {
+    const hit = items.find((e) => e[key]);
+    return hit ? hit[key] : "";
+  }
+
   function sortGroups(groups, mode) {
     const byTitle = (a, b) => a.game.localeCompare(b.game, undefined, { sensitivity: "base" });
     if (mode === "recent") {
       groups.sort((a, b) => latestDate(b.items).localeCompare(latestDate(a.items)) || byTitle(a, b));
     } else if (mode === "year") {
-      const year = (g) => g.items.find((e) => e.year)?.year || 9999;
+      const year = (g) => pick(g.items, "year") || 9999;
       groups.sort((a, b) => year(a) - year(b) || byTitle(a, b));
     } else {
       groups.sort(byTitle);
@@ -165,7 +180,7 @@
   }
 
   function sortEntries(items) {
-    // Clears first (higher score first within each), then by score, then newest date
+    // Highest score first, entries with no score last, then newest date
     items.sort((a, b) => {
       const sa = hasScore(a) ? a.score : -1;
       const sb = hasScore(b) ? b.score : -1;
@@ -187,8 +202,8 @@
       const section = el("section", "game");
       const head = el("div", "game-head");
       head.appendChild(el("h2", null, game));
-      const first = items[0];
-      const meta = [first.hardware, first.year].filter(Boolean).join(", ");
+      const meta = [pick(items, "developer"), pick(items, "hardware"), pick(items, "year")]
+        .filter(Boolean).join(", ");
       if (meta) head.appendChild(el("p", "game-meta", meta));
       section.appendChild(head);
 
@@ -246,4 +261,44 @@
         "for example: python -m http.server"
       );
     });
+
+  /* ---------- Site settings: social links and latest upload (data/site.json) ---------- */
+
+  function renderSocials(links) {
+    const nav = $("socials");
+    if (!Array.isArray(links)) return;
+    links.forEach((l) => {
+      if (!l || !l.label || !isSafeUrl(l.url)) return;
+      const a = el("a", null, l.label);
+      a.href = l.url;
+      a.target = "_blank";
+      a.rel = "me noopener noreferrer";
+      nav.appendChild(a);
+    });
+    nav.hidden = nav.children.length === 0;
+  }
+
+  // A channel's uploads playlist has the same ID as the channel with "UC" swapped for "UU",
+  // and it lists the newest upload first. That needs no API key, so it works on a static site.
+  function renderLatest(channelId) {
+    if (!/^UC[\w-]{22}$/.test(channelId || "")) return;
+    const iframe = document.createElement("iframe");
+    iframe.src = "https://www.youtube-nocookie.com/embed/videoseries?list=UU" + channelId.slice(2) + "&rel=0";
+    iframe.title = "Latest upload from my YouTube channel";
+    iframe.loading = "lazy";
+    iframe.allow = "accelerometer; encrypted-media; gyroscope; picture-in-picture; web-share";
+    iframe.referrerPolicy = "strict-origin-when-cross-origin";
+    iframe.allowFullscreen = true;
+    $("latest-frame").appendChild(iframe);
+    $("latest").hidden = false;
+  }
+
+  fetch("data/site.json", { cache: "no-cache" })
+    .then((res) => (res.ok ? res.json() : null))
+    .then((cfg) => {
+      if (!cfg) return;
+      renderSocials(cfg.links);
+      renderLatest(cfg.youtubeChannelId);
+    })
+    .catch(() => { /* site.json is optional */ });
 })();
