@@ -1,5 +1,13 @@
 [
   {
+    "game": "Blazing Lazers",
+    "score": 345560,
+    "date": "2026-10-09",
+    "platform": "PC Engine / TurboGrafx-16",
+    "year": 1989,
+    "developer": "Compile",
+    "notes": "Current WIP"
+  {
     "game": "Raiden",
     "score": 116460,
     "mode": "Easy",
