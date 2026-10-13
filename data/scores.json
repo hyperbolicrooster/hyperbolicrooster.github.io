@@ -8,17 +8,5 @@
     "year": 1989,
     "developer": "Compile",
     "notes": "Current WIP"
-  },
-  {
-    "game": "Raiden",
-    "score": 116460,
-    "mode": "Easy",
-    "date": "2026-10-08",
-    "platform": "Arcade (FinalBurn Neo)",
-    "year": 1990,
-    "hardware": "Seibu Kaihatsu Proprietary",
-    "rom": "raidenu",
-    "developer": "Seibu Kaihatsu",
-    "notes": "Current WIP"
   }
 ]
